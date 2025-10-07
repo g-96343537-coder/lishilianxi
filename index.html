@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5年级历史练习 30题</title>
+    <style>
+        body {
+            font-family: 'SimSun', 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f4f7f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 25px;
+        }
+        #quiz-box {
+            min-height: 350px;
+            text-align: left;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        .question-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            border: 2px solid #c8dafc;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .option-btn:hover:not(.correct):not(.incorrect) {
+            background-color: #d2e3fc;
+        }
+        .option-btn.selected {
+            border-color: #fbbc04;
+            background-color: #fffde7;
+        }
+        .option-btn.correct {
+            background-color: #e6ffed !important;
+            border-color: #34a853 !important;
+            font-weight: bold;
+        }
+        .option-btn.incorrect {
+            background-color: #fce8e6 !important;
+            border-color: #ea4335 !important;
+            text-decoration: line-through;
+        }
+        .action-area {
+            margin-top: 20px;
+            text-align: right;
+        }
+        #next-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #34a853;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #next-btn:hover {
+            background-color: #2c8c46;
+        }
+        #result-screen {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 3px dashed #1a73e8;
+            border-radius: 10px;
+        }
+        #final-score {
+            font-size: 32px;
+            color: #ea4335;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .review-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            border-left: 5px solid #1a73e8;
+            text-align: left;
+        }
+        .review-question {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .review-correct {
+            color: #34a853;
+        }
+        .review-your-answer {
+            color: #ea4335;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>5年级历史练习 30题</h1>
+    <p>第 <span id="current-q-num">1</span> 题 / 共 30 题</p>
+
+    <div id="quiz-box"></div>
+
+    <div class="action-area">
+        <button id="next-btn" disabled>下一题</button>
+    </div>
+
+    <div id="result-screen">
+        <h2>🎉 测验结果 🎉</h2>
+        <p>您已完成所有题目。</p>
+        <p>最终分数：</p>
+        <div id="final-score">0 / 30</div>
+        <h3>答案回顾：</h3>
+        <div id="answers-review"></div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "1. 马来西亚的国庆日是在哪一天？", opts: ["8 月 31 日", "7 月 4 日", "5 月 1 日", "9 月 16 日"], ans: 0 },
+        { q: "2. 谁是马来西亚的第一任首相？", opts: ["敦拉萨", "敦胡先翁", "林吉祥", "拿督斯里"], ans: 0 },
+        { q: "3. 马来西亚独立是在哪一年？", opts: ["1957 年", "1963 年", "1945 年", "1950 年"], ans: 0 },
+        { q: "4. 以下哪一项是马来西亚的三大民族之一？", opts: ["马来族", "法兰西族", "印度尼西亚族", "意大利族"], ans: 0 },
+        { q: "5. 殖民时期，马来亚由哪一国家统治最久？", opts: ["英国", "葡萄牙", "荷兰", "法国"], ans: 0 },
+        { q: "6. 马六甲王国是谁建立的？", opts: ["帕拉米拉王", "帕拉米拉苏丹", "帕拉米拉斯王", "帕拉米拉鲁王"], ans: 1 },
+        { q: "7. 以下哪一条河流是马来西亚的重要贸易河流？", opts: ["雪兰莪河", "长江", "黄河", "尼罗河"], ans: 0 },
+        { q: "8. 谁发明了马来文的拉丁字母拼写法？", opts: ["约瑟夫•约翰逊", "唐纳德•贝克", "威廉•西蒙", "托马斯•斯密"], ans: 0 },
+        { q: "9. 殖民时期的槟榔屿由谁统治？", opts: ["英国东印度公司", "荷兰东印度公司", "法国殖民者", "葡萄牙殖民者"], ans: 0 },
+        { q: "10. 马来西亚的首都是哪里？", opts: ["吉隆坡", "槟城", "新山", "马六甲"], ans: 0 },
+        { q: "11. 马来西亚的国父被称为什么？", opts: ["敦拉萨", "敦胡先翁", "林登", "拿督斯里"], ans: 1 },
+        { q: "12. 以下哪一项是马来西亚独立宣言的主要地点？", opts: ["吉隆坡独立广场", "槟城港口", "马六甲海峡", "新加坡"], ans: 0 },
+        { q: "13. 马来亚联邦成立是哪一年？", opts: ["1963 年", "1957 年", "1960 年", "1965 年"], ans: 0 },
+        { q: "14. 殖民时期，锡矿主要集中在哪一州？", opts: ["霹雳州", "柔佛州", "彭亨州", "吉打州"], ans: 0 },
+        { q: "15. 马来西亚的国旗共有多少条红白相间的条纹？", opts: ["14 条", "13 条", "15 条", "12 条"], ans: 0 },
+        { q: "16. 马来西亚的国家象征是？", opts: ["虎", "狮子", "老鹰", "龙"], ans: 0 },
+        { q: "17. 马来西亚的国家元首称为？", opts: ["国王", "总统", "总理", "酋长"], ans: 0 },
+        { q: "18. 马来亚联邦最初由几个州组成？", opts: ["11", "9", "10", "12"], ans: 1 },
+        { q: "19. 马来西亚的第一条铁路连接了哪两个城市？", opts: ["吉隆坡与太平", "槟城与新山", "吉隆坡与马六甲", "新山与吉打"], ans: 0 },
+        { q: "20. 马来西亚的主要经济作物之一是？", opts: ["橡胶", "小麦", "玉米", "棉花"], ans: 0 },
+        { q: "21. 马六甲成为贸易中心主要是因为？", opts: ["地理位置优越", "丰富的矿产", "先进的科技", "强大的军队"], ans: 0 },
+        { q: "22. 谁率领马来亚抵抗日本占领？", opts: ["马来亚民族解放军", "马来亚工人党", "槟城志愿军", "马六甲守军"], ans: 0 },
+        { q: "23. 马来西亚的独立象征是？", opts: ["升旗仪式", "国庆游行", "独立宣言", "国歌"], ans: 2 },
+        { q: "24. 马来西亚最早的文字是？", opts: ["爪夷文", "拉丁文", "汉字", "泰文"], ans: 0 },
+        { q: "25. 马来西亚的国花是？", opts: ["大红花", "扶桑花", "木槿花", "兰花"], ans: 2 },
+        { q: "26. 马来亚联邦最初由几个州组成？", opts: ["11", "9", "10", "12"], ans: 1 },
+        { q: "27. 马来西亚的货币单位是？", opts: ["令吉", "美元", "林吉特", "先令"], ans: 0 },
+        { q: "28. 马来西亚独立后第一位女性部长是？", opts: ["瓦伦西亚", "哈里娜", "拉蒂法", "马丽亚"], ans: 1 },
+        { q: "29. 马来西亚独立宣言是由谁宣布的？", opts: ["敦拉萨", "敦胡先翁", "林吉祥", "拿督斯里"], ans: 1 },
+        { q: "30. 马来西亚的独立象征仪式包括？", opts: ["升旗和唱国歌", "阅兵和放烟火", "游行和讲座", "祭祀和祈福"], ans: 0 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let userAnswers = [];
+    let selectedOptionIndex = -1;
+
+    const quizBox = document.getElementById('quiz-box');
+    const nextBtn = document.getElementById('next-btn');
+    const currentQNumSpan = document.getElementById('current-q-num');
+    const resultScreen = document.getElementById('result-screen');
+    const finalScoreSpan = document.getElementById('final-score');
+    const answersReviewDiv = document.getElementById('answers-review');
+
+    function renderQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            showResults();
+            return;
+        }
+
+        const q = questions[currentQuestionIndex];
+        currentQNumSpan.textContent = currentQuestionIndex + 1;
+        quizBox.innerHTML = '';
+        nextBtn.disabled = true;
+        selectedOptionIndex = -1;
+        const optionLabels = ['A', 'B', 'C', 'D'];
+
+        const qText = document.createElement('p');
+        qText.className = 'question-text';
+        qText.innerHTML = q.q;
+        quizBox.appendChild(qText);
+
+        q.opts.forEach((option, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span style="font-weight: bold; margin-right: 10px;">${optionLabels[index]}.</span> ${option}`;
+            btn.onclick = () => selectAnswer(index, btn);
+            quizBox.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(index, button) {
+        quizBox.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        selectedOptionIndex = index;
+        nextBtn.disabled = false;
+    }
+
+    nextBtn.onclick = function() {
+        if (selectedOptionIndex !== -1) {
+            const q = questions[currentQuestionIndex];
+            const isCorrect = selectedOptionIndex === q.ans;
+            userAnswers.push({
+                qNum: q.q.split('.')[0],
+                question: q.q,
+                selected: selectedOptionIndex,
+                correct: q.ans,
+                isCorrect: isCorrect
+            });
+            if (isCorrect) score++;
+
+            quizBox.querySelectorAll('.option-btn').forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === selectedOptionIndex && !isCorrect) btn.classList.add('incorrect');
+                else if (index === q.ans) btn.classList.add('correct');
+            });
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                renderQuestion();
+            }, 500);
+        }
+    };
+
+    function showResults() {
+        quizBox.style.display = 'none';
+        nextBtn.style.display = 'none';
+        resultScreen.style.display = 'block';
+        finalScoreSpan.textContent = `${score} / ${questions.length}`;
+
+        userAnswers.forEach(ans => {
+            const div = document.createElement('div');
+            div.className = 'review-box';
+            div.innerHTML = `<p class="review-question">${ans.question}</p>
+                <p>您的答案: <span class="review-your-answer">${questions[ans.selected].opts[ans.selected]}</span></p>
+                <p>正确答案: <span class="review-correct">${questions[ans.correct].opts[ans.correct]}</span></p>`;
+            answersReviewDiv.appendChild(div);
+        });
+    }
+
+    renderQuestion();
+</script>
+
+</body>
+</html>
